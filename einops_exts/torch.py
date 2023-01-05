@@ -12,7 +12,7 @@ class EinopsToAndFrom(nn.Module):
 
     def forward(self, x, **kwargs):
         shape = x.shape
-        reconstitute_kwargs = dict(tuple(zip(self.from_einops.split(' '), shape)))
+        reconstitute_kwargs = {key: value for key, value in zip(self.from_einops.split(" "), shape) if key != "..."}     
         x = rearrange(x, f'{self.from_einops} -> {self.to_einops}')
         x = self.fn(x, **kwargs)
         x = rearrange(x, f'{self.to_einops} -> {self.from_einops}', **reconstitute_kwargs)
